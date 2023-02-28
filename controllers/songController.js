@@ -1,22 +1,47 @@
 const { PrismaClient } = require("@prisma/client");
+var cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 const prisma = new PrismaClient();
 const songController = {};
 
-songController.addSong = async (req, res) => {
-  const { img_url, title, artist } = req.body;
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.SECRET_KEY,
+  secure: true,
+});
 
-  if (!img_url || !title || !artist) {
+songController.addSong = async (req, res) => {
+  const { Image } = req.files;
+  const { title, artist } = req.body;
+
+  if (!Image || !title || !artist) {
     return res.json({
       success: false,
       data: null,
       error: { msg: "Please enter all fields!!" },
     });
   }
+
+  Image.mv(
+    __dirname + "/uploads/" + Image.name
+  );
+
   try {
+
+    var new_url = await cloudinary.uploader
+    .upload( __dirname + "/uploads/" + Image.name, {
+      resource_type: "",
+      overwrite: true,
+      notification_url: "https://mysite.example.com/notify_endpoint",
+    }).then(async (result) => {
+        return result.url;
+    })
+
     const newSong = await prisma.song.create({
       data: {
-        url: img_url,
+        url: new_url,
         title,
         artist,
       },

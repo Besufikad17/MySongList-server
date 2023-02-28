@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const routes = require('./routes/routes');
-
+const fileUpload = require("express-fileupload");
 
 const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
@@ -26,6 +26,7 @@ async function connectDB(){
 connectDB();
 
 app.use(cors())
+app.use(fileUpload());
 app.use(express.json());
 app.use("/api", routes);
 
