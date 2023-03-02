@@ -12,15 +12,14 @@ cloudinary.config({
   secure: true,
 });
 
-songController.addSong = async (req, res) => {
+songController.upload = async (req, res) => {
   const { Image } = req.files;
-  const { title, artist } = req.body;
 
-  if (!Image || !title || !artist) {
+  if(!Image){
     return res.json({
       success: false,
       data: null,
-      error: { msg: "Please enter all fields!!" },
+      error: { msg: "Please upload image file!!" },
     });
   }
 
@@ -29,7 +28,6 @@ songController.addSong = async (req, res) => {
   );
 
   try {
-
     var new_url = await cloudinary.uploader
     .upload( __dirname + "/uploads/" + Image.name, {
       resource_type: "",
@@ -39,9 +37,37 @@ songController.addSong = async (req, res) => {
         return result.url;
     })
 
+    res.json({
+      success: true,
+      data: { img_url: new_url },
+      error: null,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      success: false,
+      data: null,
+      error: error.meta || { msg: "Error occurred check server log!" },
+    });
+  }
+}
+
+songController.addSong = async (req, res) => {
+  
+  const { url, title, artist } = req.body;
+
+  if (!url || !title || !artist) {
+    return res.json({
+      success: false,
+      data: null,
+      error: { msg: "Please enter all fields!!" },
+    });
+  }
+
+  try {
     const newSong = await prisma.song.create({
       data: {
-        url: new_url,
+        url,
         title,
         artist,
       },
