@@ -110,30 +110,35 @@ songController.getSongs = async (req, res) => {
 
 songController.updateSongById = async (req, res) => {
   const id = req.params.id;
-  const { img_url, title, artist } = req.body;
-
-  if (!id || !img_url || !title || !artist) {
+  const { url, title, artist } = req.body;
+  
+  if (!id || !url || !title || !artist) {
     return res.json({
       success: false,
       data: null,
       error: { msg: "Please enter all fields properly!!" },
     });
   }
+
   try {
     await prisma.song.updateMany({
       where: {
         id
       },
       data: {
-        url: img_url,
+        url: url,
         title,
         artist,
       },
     });
 
+    const updatedSong = await prisma.song.findMany({
+      where: { id }
+    })
+
     res.json({
       success: true,
-      data: {msg: "Done!!"},
+      data: updatedSong,
       error: null,
     });
   } catch (error) {
