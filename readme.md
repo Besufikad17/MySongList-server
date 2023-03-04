@@ -1,6 +1,6 @@
 # MySongList-server
 
-Backend app for [MySongList](https://github.com/Besufikad17/MySongList) made by using [nodejs](https://nodejs.org/en/), [express](https://expressjs.com/) and [prisma](https://www.prisma.io/).
+Backend app for [MySongList](https://github.com/Besufikad17/MySongList) made by using [nodejs](https://nodejs.org/en/), [express](https://expressjs.com/), [prisma](https://www.prisma.io/) and [mongoDB](https://www.mongodb.com/).
 
 ## Installation
 
