@@ -1,8 +1,6 @@
 const route = require("express").Router()
 const songController = require("../controllers/songController")
 
-route.post("/upload", songController.upload);
-
 route.post("/add", songController.addSong);
 
 route.get("/all", songController.getSongs);

@@ -5,53 +5,6 @@ require("dotenv").config();
 const prisma = new PrismaClient();
 const songController = {};
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.SECRET_KEY,
-  secure: true,
-});
-
-songController.upload = async (req, res) => {
-  const { Image } = req.files;
-
-  if(!Image){
-    return res.json({
-      success: false,
-      data: null,
-      error: { msg: "Please upload image file!!" },
-    });
-  }
-
-  Image.mv(
-    __dirname + "/uploads/" + Image.name
-  );
-
-  try {
-    var new_url = await cloudinary.uploader
-    .upload( __dirname + "/uploads/" + Image.name, {
-      resource_type: "",
-      overwrite: true,
-      notification_url: "https://mysite.example.com/notify_endpoint",
-    }).then(async (result) => {
-        return result.url;
-    })
-
-    res.json({
-      success: true,
-      data: { img_url: new_url },
-      error: null,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.json({
-      success: false,
-      data: null,
-      error: error.meta || { msg: "Error occurred check server log!" },
-    });
-  }
-}
-
 songController.addSong = async (req, res) => {
   
   const { url, title, artist } = req.body;
